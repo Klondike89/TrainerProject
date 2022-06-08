@@ -14,34 +14,34 @@ Function Validate() As Boolean
     
     With frm
     
-        Range("C2:C5").Interior.Color = xlNone
-        Range("E2:E5").Interior.Color = xlNone
+        Range("D2:D5").Interior.Color = xlNone
+        Range("F2:F5").Interior.Color = xlNone
     
     End With
     
     ' Validating Employee Name 
-    If Trim(frm.Range("C2").Value) = "" Then
+    If Trim(frm.Range("D2").Value) = "" Then
         MsgBox "Employee Name is blank.", vbOKOnly + vbInformation, "Employee Name"
-        frm.Range("C2").Select
-        frm.Range("C2").Interior.Color = vbRed
+        frm.Range("D2").Select
+        frm.Range("D2").Interior.Color = vbRed
         Validate = False
         Exit Function
     End If
 
     ' Validating Employee Number
-     If Trim(frm.Range("C3").Value) = "" Then
+     If Trim(frm.Range("D3").Value) = "" Then
         MsgBox "Employee Number is blank.", vbOKOnly + vbInformation, "Employee Number"
-        frm.Range("C3").Select
-        frm.Range("C3").Interior.Color = vbRed
+        frm.Range("D3").Select
+        frm.Range("D3").Interior.Color = vbRed
         Validate = False
         Exit Function
-    End 
+    End If
 
     ' Validating Hire Date
-    If Trim(frm.Range("C4").Value) = "" Or Not IsDate(Trim(frm.Range("C4").Value)) Then
+    If Trim(frm.Range("D4").Value) = "" Or Not IsDate(Trim(frm.Range("D4").Value)) Then
         MsgBox "Please Enter Valid Hire Date.", vbOKOnly + vbInformation, "Hire Date"
-        frm.Range("C4").Select
-        frm.Range("C4").Interior.Color = vbRed
+        frm.Range("D4").Select
+        frm.Range("D4").Interior.Color = vbRed
         Validate = False
         Exit Function
     End If
@@ -51,10 +51,19 @@ End Function
 ' Validate Employee Number
 ' Used only Once
 Function ValEmpNum(TstEmpNum)
+    msgbox "TEST"
+    ' Open Sheet TraineeDatabase
 
-' 
-' CODE GOES HERE
-'
+    ' Get Len of Employees in TraineeDatabase
+
+    ' For each employee in TraineeDatabase
+        
+        ' if TstEmpNum = Employee Number
+            ' Valid = False
+            ' Send Error Message
+            ' Dont Save
+        
+        ' ELSE PASS
 
 End Function
 
@@ -67,8 +76,8 @@ If TnrRow = 0 Then
     
     MsgBox "No such Trainer record found!", vbOKOnly + vbCritical, "No Record"
             
-    frm.Range("E" & i).Select
-    frm.Range("E" & i).Interior.Color = vbRed
+    frm.Range("F" & i).Select
+    frm.Range("F" & i).Interior.Color = vbRed
                 
     Exit Function
         
@@ -83,16 +92,19 @@ Sub TraineeReset()
 
     With Sheets("Trainee Schedule")
     
-        .Range("C2:C5").Interior.Color = xlNone
-        .Range("C2:C5").Value = ""
+        .Range("D2:D5").Interior.Color = xlNone
+        .Range("D2:D5").Value = ""
         
-        .Range("E2:E5").Interior.Color = xlNone
-        .Range("E2:E5").Value = ""
+        .Range("F2:F5").Interior.Color = xlNone
+        .Range("F2:F5").Value = ""
         
-        .Range("B11:E71").Interior.Color = xlNone
-        .Range("B11:E71").Value = ""
+        .Range("B11:B71").Interior.Color = xlNone
+        .Range("B11:B71").Value = ""
         
-        .Range("L2:M2").Value = ""
+        .Range("D11:F71").Interior.Color = xlNone
+        .Range("D11:F71").Value = ""
+        
+        .Range("M2:N2").Value = ""
         .Range("H13").Value = ""
         .Range("H15").Value = ""
     
@@ -110,13 +122,16 @@ Sub TrnRReset()
         .Range("C2").Interior.Color = xlNone
         .Range("C2").Value = ""
         
-        .Range("E2").Interior.Color = xlNone
-        .Range("E2").Value = ""
+        .Range("F2").Interior.Color = xlNone
+        .Range("F2").Value = ""
         
-        .Range("B8:E71").Interior.Color = xlNone
-        .Range("B8:E71").Value = ""
+        .Range("B8:B71").Interior.Color = xlNone
+        .Range("B8:B71").Value = ""
         
-        .Range("H4:H5").Value = ""
+        .Range("D8:F71").Interior.Color = xlNone
+        .Range("D8:F71").Value = ""
+        
+        .Range("I4:I5").Value = ""
     
     End With
 
@@ -139,33 +154,34 @@ Sub Save()
     
     ' Check for existing iRow and iSerial values
     ' Else assign new iRow and iSerial
-    If Trim(frm.Range("M2").Value) = "" Then
+    If Trim(frm.Range("N2").Value) = "" Then
         iRow = TnEdb.Range("A" & Application.Rows.Count).End(xlUp).Row + 1
         iSerial = TnEdb.Cells(iRow - 1, 1).Value + 1
+        Call ValEmpNum(frm.Range("D3").Value)
     Else
-        iRow = frm.Range("L2").Value
-        iSerial = frm.Range("M2").Value
+        iRow = frm.Range("M2").Value
+        iSerial = frm.Range("N2").Value
     End If
     
     ' Populate Trainee Database with Data from Form
     With TnEdb
         .Cells(iRow, 1).Value = iSerial
         'EE Number
-        .Cells(iRow, 2).Value = frm.Range("C3").Value
+        .Cells(iRow, 2).Value = frm.Range("D3").Value
         'EE Name
-        .Cells(iRow, 3).Value = frm.Range("C2").Value
+        .Cells(iRow, 3).Value = frm.Range("D2").Value
         'Hire Date
-        .Cells(iRow, 4).Value = frm.Range("C4").Value
+        .Cells(iRow, 4).Value = frm.Range("D4").Value
         'Locker Number
-        .Cells(iRow, 5).Value = frm.Range("C5").Value
+        .Cells(iRow, 5).Value = frm.Range("D5").Value
         'Computer Start
-        .Cells(iRow, 6).Value = frm.Range("E2").Value
+        .Cells(iRow, 6).Value = frm.Range("F2").Value
         'Computer End
-        .Cells(iRow, 7).Value = frm.Range("E3").Value
+        .Cells(iRow, 7).Value = frm.Range("F3").Value
         'Dallas Training
-        .Cells(iRow, 8).Value = frm.Range("E4").Value
+        .Cells(iRow, 8).Value = frm.Range("F4").Value
         'Training Completion
-        .Cells(iRow, 9).Value = frm.Range("E5").Value
+        .Cells(iRow, 9).Value = frm.Range("F5").Value
     End With
 
 End Sub
@@ -197,8 +213,8 @@ Sub Schedule()
     Dim TnRnum As Long
     Dim TnRtime As String
 
-    TnEname = frm.Range("C2")
-    TnEnum = frm.Range("C3")
+    TnEname = frm.Range("D2")
+    TnEnum = frm.Range("D3")
     
     'Counter for workdays on form
     Dim i As Integer
@@ -220,12 +236,12 @@ Sub Schedule()
         Month = Format(Range("B" & i), "mmmm yyyy")
         Day = Format(Range("B" & i), "d") + 1
         
-        Hours = frm.Range("C" & i)
-        JbDuty = frm.Range("D" & i)
+        Hours = frm.Range("D" & i)
+        JbDuty = frm.Range("E" & i)
         
         'Evaluate Trainer Info
         
-        TnRname = frm.Range("E" & i)
+        TnRname = frm.Range("F" & i)
         TnRtime = "PLACE HOLDER"
     
         TnrRow = Application.WorksheetFunction.IfError(Application.Match(TnRname, Sheets("Trainer Database").Range("B:B"), 0), 0)
@@ -294,24 +310,24 @@ Sub Update()
         
     End If
         
-    Sheets("Trainee Schedule").Range("L2").Value = iRow
-    Sheets("Trainee Schedule").Range("M2").Value = iSerial
+    Sheets("Trainee Schedule").Range("M2").Value = iRow
+    Sheets("Trainee Schedule").Range("N2").Value = iSerial
     
-    Sheets("Trainee Schedule").Range("C3").Value = Sheets("Trainee Database").Cells(iRow, 2).Value
+    Sheets("Trainee Schedule").Range("D3").Value = Sheets("Trainee Database").Cells(iRow, 2).Value
     'Employee Name
-    Sheets("Trainee Schedule").Range("C2").Value = Sheets("Trainee Database").Cells(iRow, 3).Value
+    Sheets("Trainee Schedule").Range("D2").Value = Sheets("Trainee Database").Cells(iRow, 3).Value
     'Employee Hire Date
-    Sheets("Trainee Schedule").Range("C4").Value = Sheets("Trainee Database").Cells(iRow, 4).Value
+    Sheets("Trainee Schedule").Range("D4").Value = Sheets("Trainee Database").Cells(iRow, 4).Value
     'Locker Number
-    Sheets("Trainee Schedule").Range("C5").Value = Sheets("Trainee Database").Cells(iRow, 5).Value
+    Sheets("Trainee Schedule").Range("D5").Value = Sheets("Trainee Database").Cells(iRow, 5).Value
     'Comp Start
-    Sheets("Trainee Schedule").Range("E2").Value = Sheets("Trainee Database").Cells(iRow, 6).Value
+    Sheets("Trainee Schedule").Range("F2").Value = Sheets("Trainee Database").Cells(iRow, 6).Value
     'Comp End
-    Sheets("Trainee Schedule").Range("E3").Value = Sheets("Trainee Database").Cells(iRow, 7).Value
+    Sheets("Trainee Schedule").Range("F3").Value = Sheets("Trainee Database").Cells(iRow, 7).Value
     'Dallas
-    Sheets("Trainee Schedule").Range("E4").Value = Sheets("Trainee Database").Cells(iRow, 8).Value
+    Sheets("Trainee Schedule").Range("F4").Value = Sheets("Trainee Database").Cells(iRow, 8).Value
     'All Training
-    Sheets("Trainee Schedule").Range("E5").Value = Sheets("Trainee Database").Cells(iRow, 9).Value
+    Sheets("Trainee Schedule").Range("F5").Value = Sheets("Trainee Database").Cells(iRow, 9).Value
     
 End Sub
 
@@ -345,15 +361,15 @@ Dim Daylen As Long
 Dim y As Integer
 Dim z As Integer
 
-TnEname = Range("C2").Value
+TnEname = Range("D2").Value
 
-Set st = Range("H13").Offset(x, 0)
-Set en = Range("H15").Offset(x, 0)
+Set st = Range("I13").Offset(x, 0)
+Set en = Range("I15").Offset(x, 0)
 stDate = DateSerial(Year(st), Month(st), Day(st))
 enDate = DateSerial(Year(en), Month(en), Day(en))
 
 'loop through the dates as necessary
-For d = stDate To enDate
+For d = stDate To enDate + 1
 
     SheetMonth = Format(d, "mmmm yyyy")
     SheetDay = Format(d, "d")
@@ -384,9 +400,9 @@ For d = stDate To enDate
                     FrmRow = ThisWorkbook.Sheets("Trainee Schedule").Range("B" & Application.Rows.Count).End(xlUp).Row + 1
                     
                     ThisWorkbook.Sheets("Trainee Schedule").Range("B" & FrmRow).Value = d - 1
-                    ThisWorkbook.Sheets("Trainee Schedule").Range("C" & FrmRow).Value = Hours
-                    ThisWorkbook.Sheets("Trainee Schedule").Range("D" & FrmRow).Value = JbDuty
-                    ThisWorkbook.Sheets("Trainee Schedule").Range("E" & FrmRow).Value = TnRname
+                    ThisWorkbook.Sheets("Trainee Schedule").Range("D" & FrmRow).Value = Hours
+                    ThisWorkbook.Sheets("Trainee Schedule").Range("E" & FrmRow).Value = JbDuty
+                    ThisWorkbook.Sheets("Trainee Schedule").Range("F" & FrmRow).Value = TnRname
                     
                     Exit Do
                 
@@ -434,13 +450,13 @@ Dim z As Integer
 
 TnRname = Range("C2").Value
 
-Set st = Range("H4").Offset(x, 0)
-Set en = Range("H5").Offset(x, 0)
+Set st = Range("I4").Offset(x, 0)
+Set en = Range("I5").Offset(x, 0)
 stDate = DateSerial(Year(st), Month(st), Day(st))
 enDate = DateSerial(Year(en), Month(en), Day(en))
 
 'loop through the dates as necessary
-For d = stDate To enDate
+For d = stDate To enDate + 1
 
     SheetMonth = Format(d, "mmmm yyyy")
     SheetDay = Format(d, "d")
@@ -471,9 +487,9 @@ For d = stDate To enDate
                     FrmRow = ThisWorkbook.Sheets("Trainer Schedule").Range("B" & Application.Rows.Count).End(xlUp).Row + 1
                     
                     ThisWorkbook.Sheets("Trainer Schedule").Range("B" & FrmRow).Value = d - 1
-                    ThisWorkbook.Sheets("Trainer Schedule").Range("C" & FrmRow).Value = Hours
-                    ThisWorkbook.Sheets("Trainer Schedule").Range("D" & FrmRow).Value = JbDuty
-                    ThisWorkbook.Sheets("Trainer Schedule").Range("E" & FrmRow).Value = TnEname
+                    ThisWorkbook.Sheets("Trainer Schedule").Range("D" & FrmRow).Value = Hours
+                    ThisWorkbook.Sheets("Trainer Schedule").Range("E" & FrmRow).Value = JbDuty
+                    ThisWorkbook.Sheets("Trainer Schedule").Range("F" & FrmRow).Value = TnEname
                     
                     Exit Do
                 

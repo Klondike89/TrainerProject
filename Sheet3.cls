@@ -24,7 +24,7 @@ Private Sub cmdSaveTnE_Click()
             
                 Call Save
                 Call Schedule
-                Call Reset
+                Call TraineeReset
             
             End If
     
