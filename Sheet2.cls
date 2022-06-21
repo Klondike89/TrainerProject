@@ -1,5 +1,11 @@
 Private Sub CommandButton1_Click()
-    Call LoadTnR
+
+    if ValTnRDates = True Then
+
+        Call LoadTnR
+
+    end if
+    
 End Sub
 
 Private Sub CommandButton2_Click()

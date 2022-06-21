@@ -48,28 +48,104 @@ Function Validate() As Boolean
 
 End Function
 
+' Validate Time Frames
+' Used for Trainee Schedule
+Function ValTrneeDates() As Boolean
+
+    Dim frm As Worksheet
+    
+    Set frm = ThisWorkbook.Sheets("Trainee Schedule")
+    
+    ValTrneeDates = True
+
+    With frm
+    
+        Range("I13").Interior.Color = xlNone
+        Range("I15").Interior.Color = xlNone
+    
+    End With
+
+    If Trim(frm.Range("I13").Value) = "" Or Not IsDate(Trim(frm.Range("I13").Value)) Then
+        MsgBox "Please Enter Date to load FROM.", vbOKOnly + vbInformation, "Time Frames"
+        frm.Range("I13").Select
+        frm.Range("I13").Interior.Color = vbRed
+        ValTrneeDates = False
+        Exit Function
+    End If
+
+    If Trim(frm.Range("I15").Value) = "" Or Not IsDate(Trim(frm.Range("I15").Value)) Then
+        MsgBox "Please Enter Date to load TO.", vbOKOnly + vbInformation, "Time Frames"
+        frm.Range("I15").Select
+        frm.Range("I15").Interior.Color = vbRed
+        ValTrneeDates = False
+        Exit Function
+    End If
+
+End Function
+
+' Validate Time Frames
+' Used for Trainer Schedule
+Function ValTnRDates() As Boolean
+
+    Dim frm As Worksheet
+    
+    Set frm = ThisWorkbook.Sheets("Trainer Schedule")
+    
+    ValTnrDates = True
+
+    With frm
+    
+        Range("I4:I5").Interior.Color = xlNone
+    
+    End With
+
+    If Trim(frm.Range("I4").Value) = "" Or Not IsDate(Trim(frm.Range("I4").Value)) Then
+        MsgBox "Please Enter Date to load FROM.", vbOKOnly + vbInformation, "Time Frames"
+        frm.Range("I4").Select
+        frm.Range("I4").Interior.Color = vbRed
+        ValTnrDates = False
+        Exit Function
+    End If
+
+    If Trim(frm.Range("I5").Value) = "" Or Not IsDate(Trim(frm.Range("I5").Value)) Then
+        MsgBox "Please Enter Date to load TO.", vbOKOnly + vbInformation, "Time Frames"
+        frm.Range("I5").Select
+        frm.Range("I5").Interior.Color = vbRed
+        ValTnrDates = False
+        Exit Function
+    End If
+
+End Function
+
 ' Validate Employee Number
 ' Used only Once
-Function ValEmpNum(TstEmpNum)
-    msgbox "TEST"
+Function ValEmpNum(TstEmpNum as Long) as Boolean
+    ValEmpNum = True
     ' Open Sheet TraineeDatabase
-
+    Dim TnEdb as Worksheet
+    Set TnEdb = ThisWorkbook.Sheets("Trainee Database")
     ' Get Len of Employees in TraineeDatabase
+    Dim i as Integer
+    Dim TnEcount as Long
+    TnEcount = TnEdb.Range("A" & Application.Rows.Count).End(xlUp).Row
 
     ' For each employee in TraineeDatabase
-        
+    Dim TryEmp as Long
+    For i = 2 To TnEcount    
         ' if TstEmpNum = Employee Number
-            ' Valid = False
+        TryEmp = TnEdb.Range("B" & i).Value
+        if TstEmpNum = TryEmp Then
             ' Send Error Message
-            ' Dont Save
-        
-        ' ELSE PASS
+            msgbox "Error Employee Number already in Database."
+            ValEmpNum = False
+            Exit Function
+        End if
+    Next i
 
 End Function
 
 ' Validating Cells
 ' of Trainer Schedule
-
 Function ValTnR(TnrRow, i As Integer, frm As Worksheet)
 
 If TnrRow = 0 Then
@@ -87,7 +163,6 @@ End Function
 
 ' Clear Cells 
 ' Trainee Schedule
-
 Sub TraineeReset()
 
     With Sheets("Trainee Schedule")
@@ -105,8 +180,9 @@ Sub TraineeReset()
         .Range("D11:F71").Value = ""
         
         .Range("M2:N2").Value = ""
-        .Range("H13").Value = ""
-        .Range("H15").Value = ""
+        .Range("I13").Value = ""
+        .Range("I15").Value = ""
+        .Range("H19").Value = ""
     
     End With
 
@@ -114,7 +190,6 @@ End Sub
 
 ' Clear Cells
 ' Trainer Schedule
-
 Sub TrnRReset()
 
     With Sheets("Trainer Schedule")
@@ -139,7 +214,6 @@ End Sub
 
 ' Save Employee Info
 ' from Trainee Schedule
-
 Sub Save()
 
     ' Declare Worksheets
@@ -151,13 +225,17 @@ Sub Save()
     ' Point to worksheets
     Set frm = ThisWorkbook.Sheets("Trainee Schedule")
     Set TnEdb = ThisWorkbook.Sheets("Trainee Database")
-    
+
     ' Check for existing iRow and iSerial values
     ' Else assign new iRow and iSerial
     If Trim(frm.Range("N2").Value) = "" Then
-        iRow = TnEdb.Range("A" & Application.Rows.Count).End(xlUp).Row + 1
-        iSerial = TnEdb.Cells(iRow - 1, 1).Value + 1
-        Call ValEmpNum(frm.Range("D3").Value)
+        if ValEmpNum(frm.Range("D3").Value) = True Then
+            iRow = TnEdb.Range("A" & Application.Rows.Count).End(xlUp).Row + 1
+            iSerial = TnEdb.Cells(iRow - 1, 1).Value + 1
+        Else
+            Exit Sub
+        End If
+
     Else
         iRow = frm.Range("M2").Value
         iSerial = frm.Range("N2").Value
@@ -182,13 +260,14 @@ Sub Save()
         .Cells(iRow, 8).Value = frm.Range("F4").Value
         'Training Completion
         .Cells(iRow, 9).Value = frm.Range("F5").Value
+        ' Trainee Notes
+        .Cells(iRow, 10).Value = frm.Range("H19").Value
     End With
 
 End Sub
 
 ' Save Schedule
 ' from Trainee Schedule Form
-
 Sub Schedule()
 
     ' Declare and point to Worksheet
@@ -328,7 +407,8 @@ Sub Update()
     Sheets("Trainee Schedule").Range("F4").Value = Sheets("Trainee Database").Cells(iRow, 8).Value
     'All Training
     Sheets("Trainee Schedule").Range("F5").Value = Sheets("Trainee Database").Cells(iRow, 9).Value
-    
+    ' Trainee Notes
+    Sheets("Trainee Schedule").Range("H19").Value = Sheets("Trainee Database").Cells(iRow, 10).Value
 End Sub
 
 

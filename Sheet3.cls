@@ -40,9 +40,11 @@ Private Sub cmdLoadTnE_Click()
     
     If msgValue = vbYes Then
     
-        Call Update
-        Call LoadSchedule
-    
+        if ValTrneeDates = True Then
+
+            Call Update
+            Call LoadSchedule
+        End If
     End If
 
 End Sub
